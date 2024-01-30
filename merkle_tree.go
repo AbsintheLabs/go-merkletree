@@ -27,6 +27,7 @@ package merkletree
 
 import (
 	"bytes"
+	"math/big"
 	"math/bits"
 	"runtime"
 	"sync"
@@ -221,13 +222,11 @@ func (m *MerkleTree) newParallel(blocks []DataBlock) error {
 	return ErrInvalidConfigMode
 }
 
-// concatHash concatenates two byte slices, b1 and b2.
 func concatHash(b1, b2 []byte) []byte {
-	result := make([]byte, len(b1)+len(b2))
-	copy(result, b1)
-	copy(result[len(b1):], b2)
-
-	return result
+	return new(big.Int).Add(
+		new(big.Int).SetBytes(b1),
+		new(big.Int).SetBytes(b2),
+	).Bytes()
 }
 
 // concatSortHash concatenates two byte slices, b1 and b2, in a sorted order.
